@@ -14,17 +14,19 @@ Ponto-de-Entrada: MA410COR - Alterar cores do browse do cadastro de status do Pe
 /*/
  
 User Function MA410COR()
-  Local aCores := { { "(U_fn410Vld('C'))", "BR_PINK"},;        // Bloqueado por credito
-				            { "(U_fn410Vld('E'))", "BR_MARROM"},;      // Bloqueado por estoque
+  Local cCampo := IIF(SC5->(FieldPos("C5_XSTATUS") > 0),"C5_XSTATUS","C5_NUM")
+  Local aCores := { { cCampo+" == 'E'"   , "BR_VERDE_ESCURO"},;   // Pedido de Venda Entregue
+                    { cCampo+" == 'L'"   , "BR_VIOLETA"},;        // Pedido de Venda Liquidado
+                    { "(U_fn410Vld('C'))", "BR_PINK"},;           // Bloqueado por credito
+				            { "(U_fn410Vld('E'))", "BR_MARROM"},;         // Bloqueado por estoque
 	                  { "(! Empty(C5_NOTA) .or. C5_LIBEROK == 'E') .and. Empty(C5_BLQ) .and. (U_fn410Vld('L')) ","DISABLE" },;    // Pedido Encerrado            
   				          { "! Empty(C5_LIBEROK) .and. Empty(C5_NOTA) .and. Empty(C5_BLQ) .and. (U_fn410Vld('L')) " ,"BR_AMARELO"},;  // Pedido Liberado
-				            { "C5_BLQ == '1'"    , "BR_AZUL"},;        // Pedido Bloquedo por regra
-				            { "C5_BLQ == '2'"    , "BR_LARANJA"},;     // Pedido Bloquedo por verba					
-				            { "(U_fn410Vld('W'))", "BR_BRANCO"},;      // Bloqueado por WMS
+				            { "C5_BLQ == '1'"    , "BR_AZUL"},;           // Pedido Bloquedo por regra
+				            { "C5_BLQ == '2'"    , "BR_LARANJA"},;        // Pedido Bloquedo por verba					
+				            { "(U_fn410Vld('W'))", "BR_BRANCO"},;         // Bloqueado por WMS
 				            { "Empty(C5_LIBEROK) .and. Empty(C5_NOTA) .and. Empty(C5_BLQ)","ENABLE"},;  // Pedido em Aberto     
-				            { "C5_BLQ == '9'"    , "BR_PRETO"},;       // Pedido bloqueado por regra (desconto/acrescimo)
-                    { "C5_XSTATUS == 'E'", "BR_VERDE_ESCURO"},;// Pedido de Venda Entregue
-                    { "C5_XSTATUS == 'L'", "BR_VIOLETA"}}      // Pedido de Venda Liquidado
+				            { "C5_BLQ == '9'"    , "BR_PRETO"}}           // Pedido bloqueado por regra (desconto/acrescimo)
+                    
 				
 Return aCores
 
