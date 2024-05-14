@@ -20,8 +20,8 @@ User Function MTA410()
 	Local nPosItem  := Ascan(aHeader,{|x| Alltrim(x[2]) == "C6_ITEM"   })
 	Local nPosProd  := Ascan(aHeader,{|x| Alltrim(x[2]) == "C6_PRODUTO"})
 	Local nPosQuant := Ascan(aHeader,{|x| Alltrim(x[2]) == "C6_QTDVEN" })
-	Local nPosLocal := Ascan(aHeader,{|x| Alltrim(x[2]) == "C6_ENTREG" })
-	Local nPosDtEnt := Ascan(aHeader,{|x| Alltrim(x[2]) == "C6_LOCAL"  })
+	Local nPosLocal := Ascan(aHeader,{|x| Alltrim(x[2]) == "C6_LOCAL" })
+	Local nPosDtEnt := Ascan(aHeader,{|x| Alltrim(x[2]) == "C6_ENTREG"  })
 	Local nOption   := IIF(INCLUI,3,IIF(ALTERA,4,0))
 	Local cWhere    := ""
 	Local nY 
