@@ -73,16 +73,15 @@ User Function MTA410()
 	Next
 
 	If nOption == 4
-		
 		cWhere := "% SC1.C1_XNEMPEM = '"+ M->C5_XNEMPEM +"'%"
 
 		BeginSql Alias "SQL_SC1"           
 			SELECT    
-				C1_NUM
+				SC1.C1_NUM
 			FROM
 				%table:SC1% SC1 
 			WHERE
-				C1_FILIAL = %xFilial:SC1%
+				SC1.C1_FILIAL = %xFilial:SC1%
 				AND %Exp:cWhere%
 				AND SC1.%notDel%
     	EndSql
@@ -93,7 +92,6 @@ User Function MTA410()
 		EndIF 
 		
 		SQL_SC1->(dbCloseArea())
-
 	EndIF 
 	
 	MSExecAuto({|x,y| MATA110(x,y)}, aCabec, aItemSC, nOption)
@@ -101,16 +99,15 @@ User Function MTA410()
 	If !lMsErroAuto
 		
 		If nOption == 4
-			
 			cWhere := "% SC2.C2_XNEMPEM = '"+ M->C5_XNEMPEM +"'%"
 
 			BeginSql Alias "SQL_SC2"           
 				SELECT    
-					C2_NUM
+					SC2.C2_NUM
 				FROM
 					%table:SC2% SC2 
 				WHERE
-					C2_FILIAL  = %xFilial:SC2%
+					SC2.C2_FILIAL  = %xFilial:SC2%
 					AND %Exp:cWhere%
 					AND SC2.%notDel%
 			EndSql
@@ -121,7 +118,6 @@ User Function MTA410()
 			EndIF
 
 			SQL_SC2->(dbCloseArea())
-
 		EndIF
 
 		If Len(aVetorOP) > 0
