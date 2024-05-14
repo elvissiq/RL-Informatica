@@ -63,7 +63,7 @@ User Function MTA410()
 			aAdd(aLinha, {'C2_DATPRI' , M->C5_EMISSAO        	   , Nil} )
 			aAdd(aLinha, {'C2_DATPRF' , M->C5_EMISSAO              , Nil} )
 			aAdd(aLinha, {'C2_EMISSAO', M->C5_EMISSAO              , Nil} )
-			aAdd(aLinha, {'C1_XNEMPEM', M->C5_XNEMPEM              , Nil} )
+			aAdd(aLinha, {'C2_XNEMPEM', M->C5_XNEMPEM              , Nil} )
 			aAdd(aLinha, {'AUTEXPLODE', 'S'                        , Nil} )
 			aAdd(aVetorOP,aLinha)
 
