@@ -64,6 +64,8 @@ User Function PE01NFESEFAZ()
 
     DBSelectArea("SD2")
     SD2->(DBSetOrder(3))
+    
+
         cMensCli := cMensCli
         
         DBSelectArea("SA1")
