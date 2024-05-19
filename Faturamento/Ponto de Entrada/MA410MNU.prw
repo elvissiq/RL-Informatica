@@ -12,9 +12,11 @@ ou antes da apresentação do Menu de opções, caso Browse inicial esteja desabilit
 @history 
 /*/
 User Function MA410MNU()
-	If ! IsBlind() 
+	
+  If ! IsBlind() 
      aAdd(aRotina,{"Pedido Entregue" ,"U_RFATF001('E')",0,3,0,Nil})
      aAdd(aRotina,{"Pedido Liquidado","U_RFATF001('L')",0,3,0,Nil})
      aAdd(aRotina,{'Imprimir Pedido','U_zRPedVen',0,3,0,NIL})
   EndIf 
+  
 Return Nil 

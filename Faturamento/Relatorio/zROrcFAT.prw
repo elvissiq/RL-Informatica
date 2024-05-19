@@ -24,10 +24,7 @@ Static nPosSTUn   := 0000                                                       
 Static nPosSTVl   := 0000                                                                  //Posição Inicial da Coluna de Valor Unitírio + ST
 Static nPosSTBa   := 0000                                                                  //Posição Inicial da Coluna de Base do ST
 Static nPosSTTo   := 0000                                                                  //Posição Inicial da Coluna de Valor Total ST
-Static nPosEnt    := 0000                                                                  //Posição Inicial da Coluna de Data de Entrega
 Static nTamFundo  := 15                                                                    //Altura de fundo dos blocos com título
-Static cEmpEmail  := Alltrim(SuperGetMV("MV_X_EMAIL", .F., "email@empresa.com.br"))        //Parímetro com o e-Mail da empresa
-Static cEmpSite   := Alltrim(SuperGetMV("MV_X_HPAGE", .F., "http://www.empresa.com.br"))   //Parímetro com o site da empresa
 Static nCorAzul   := RGB(89, 111, 117)                                                     //Cor Azul usada nos Títulos
 Static cNomeFont  := "Arial"                                                               //Nome da Fonte Padrío
 Static oFontDet   := Nil                                                                   //Fonte utilizada na Impressão dos itens
@@ -123,7 +120,6 @@ Static Function fMontaRel(oProc)
 	Local nTotSol       := 0
 	//Variaveis do relatório
 	Local cNomeRel      := "Orcamento_venda_"+FunName()+"_"+RetCodUsr()+"_"+dToS(Date())+"_"+StrTran(Time(), ":", "")
-	Local aSX3Box       := RetSX3Box(GetSX3Cache("CK_XPRZENT", "X3_CBOX"),,,1)
 	Local nValSV        := 0
 	Private oPrintPvt
 	Private cHoraEx     := Time()
@@ -162,20 +158,19 @@ Static Function fMontaRel(oProc)
 	cQryPed += "    CJ_EMISSAO, "                                + CRLF
 	cQryPed += "    CJ_CLIENTE, "                                + CRLF
 	cQryPed += "    CJ_LOJA, "                                   + CRLF
-	cQryPed += "    CJ_XMSGI, "                                  + CRLF
-	cQryPed += "    ISNULL(A1_NOME, '') AS A1_NOME, "       	 + CRLF
-	cQryPed += "    ISNULL(A1_NREDUZ, '') AS A1_NREDUZ, "      	 + CRLF
-	cQryPed += "    ISNULL(A1_PESSOA, '') AS A1_PESSOA, "        + CRLF
-	cQryPed += "    ISNULL(A1_CGC, '') AS A1_CGC, "              + CRLF
-	cQryPed += "    ISNULL(A1_END, '') AS A1_END, "              + CRLF
-	cQryPed += "    ISNULL(A1_BAIRRO, '') AS A1_BAIRRO, "        + CRLF
-	cQryPed += "    ISNULL(A1_MUN, '') AS A1_MUN, "              + CRLF
-	cQryPed += "    ISNULL(A1_EST, '') AS A1_EST, "              + CRLF
-	cQryPed += "    ISNULL(A1_DDD, '') AS A1_DDD, "       		 + CRLF
-	cQryPed += "    ISNULL(A1_TEL, '') AS A1_TEL, "       		 + CRLF
-	cQryPed += "    ISNULL(A1_EMAIL, '') AS A1_EMAIL, "       	 + CRLF
+	cQryPed += "    A1_NOME, "       	 						 + CRLF
+	cQryPed += "    A1_NREDUZ, "      	 						 + CRLF
+	cQryPed += "    A1_PESSOA, "        						 + CRLF
+	cQryPed += "    A1_CGC, "              						 + CRLF
+	cQryPed += "    A1_END, "              						 + CRLF
+	cQryPed += "    A1_BAIRRO, "        						 + CRLF
+	cQryPed += "    A1_MUN, "              						 + CRLF
+	cQryPed += "    A1_EST, "              						 + CRLF
+	cQryPed += "    A1_DDD, "       		 					 + CRLF
+	cQryPed += "    A1_TEL, "       		 					 + CRLF
+	cQryPed += "    A1_EMAIL, "       	 						 + CRLF
 	cQryPed += "    CJ_CONDPAG, "                                + CRLF
-	cQryPed += "    ISNULL(E4_DESCRI, '') AS E4_DESCRI, "        + CRLF
+	cQryPed += "    E4_DESCRI, "        					 	 + CRLF
 	cQryPed += "    CJ_TPFRETE, "                                + CRLF
 	cQryPed += "    CJ_FRETE, "                                  + CRLF
 	cQryPed += "    SCJ.R_E_C_N_O_ AS CJREC "                    + CRLF
@@ -184,7 +179,7 @@ Static Function fMontaRel(oProc)
 	cQryPed += "    LEFT JOIN "+RetSQLName("SA1")+" SA1 ON ( "   + CRLF
 	cQryPed += "        A1_FILIAL   = '"+FWxFilial("SA1")+"' "   + CRLF
 	cQryPed += "        AND A1_COD  = SCJ.CJ_CLIENTE "           + CRLF
-	cQryPed += "        AND A1_LOJA = SCJ.CJ_LOJA "           + CRLF
+	cQryPed += "        AND A1_LOJA = SCJ.CJ_LOJA "           	 + CRLF
 	cQryPed += "        AND SA1.D_E_L_E_T_ = ' ' "               + CRLF
 	cQryPed += "    ) "                                          + CRLF
 	cQryPed += "    LEFT JOIN "+RetSQLName("SE4")+" SE4 ON ( "   + CRLF
@@ -240,17 +235,16 @@ Static Function fMontaRel(oProc)
 			//Seleciona agora os itens do Orçamento
 			cQryIte := " SELECT "                                      + CRLF
 			cQryIte += "    CK_PRODUTO, "                              + CRLF
-			cQryIte += "    ISNULL(B1_DESC, '') AS B1_DESC, "          + CRLF
-			cQryIte += "    ISNULL(B1_POSIPI, '') AS B1_POSIPI, "      + CRLF
-			cQryIte += "    ISNULL(B1_TIPO, '') AS B1_TIPO, "          + CRLF
+			cQryIte += "    B1_DESC, "          					   + CRLF
+			cQryIte += "    B1_POSIPI, "      						   + CRLF
+			cQryIte += "    B1_TIPO, "          					   + CRLF
 			cQryIte += "    CK_UM, "                                   + CRLF
 			cQryIte += "    CK_ENTREG, "                               + CRLF
 			cQryIte += "    CK_TES, "                                  + CRLF
 			cQryIte += "    CK_QTDVEN, "                               + CRLF
 			cQryIte += "    CK_PRCVEN, "                               + CRLF
 			cQryIte += "    CK_VALDESC, "                              + CRLF
-			cQryIte += "    CK_VALOR, "                                + CRLF
-			cQryIte += "    CK_XPRZENT "                               + CRLF
+			cQryIte += "    CK_VALOR "                                 + CRLF
 			cQryIte += " FROM "                                        + CRLF
 			cQryIte += "    "+RetSQLName("SCK")+" SCK "                + CRLF
 			cQryIte += "    LEFT JOIN "+RetSQLName("SB1")+" SB1 ON ( " + CRLF
@@ -349,9 +343,6 @@ Static Function fMontaRel(oProc)
 					oPrintPvt:SayAlign(nLinAtu, nPosSTVl, Alltrim(Transform(nPrcUniSol, cMaskPrc)),          oFontDet, 050, 07, , nPadLeft,)
 					oPrintPvt:SayAlign(nLinAtu, nPosSTTo, Alltrim(Transform(nTotSol, cMaskVlr)),             oFontDet, 050, 07, , nPadLeft,) 
 					oPrintPvt:SayAlign(nLinAtu, nPosAIcm, Alltrim(Transform(nAlqICM, cMaskPad)),             oFontDet, 050, 07, , nPadLeft,)
-					If !Empty(QRY_ITE->CK_XPRZENT)
-					oPrintPvt:SayAlign(nLinAtu, nPosEnt , Alltrim(aSX3Box[Val(QRY_ITE->CK_XPRZENT),3]),      oFontDet, 050, 07, , nPadLeft,)
-					EndIf 
 				Else
 					oPrintPvt:SayAlign(nLinAtu, nPosCod , QRY_ITE->CK_PRODUTO,                               oFontDet, 200, 07, , nPadLeft,)
 					oPrintPvt:SayAlign(nLinAtu, nPosDesc, QRY_ITE->B1_DESC,                                  oFontDet, 200, 07, , nPadLeft,)
@@ -362,9 +353,6 @@ Static Function fMontaRel(oProc)
 					oPrintPvt:SayAlign(nLinAtu, nPosVTot, Alltrim(Transform(QRY_ITE->CK_VALOR, cMaskVlr)),   oFontDet, 050, 07, , nPadLeft,)
 					oPrintPvt:SayAlign(nLinAtu, nPosAIcm, Alltrim(Transform(nAlqICM, cMaskPad)),             oFontDet, 050, 07, , nPadLeft,)
 					oPrintPvt:SayAlign(nLinAtu, nPosAIpi, Alltrim(Transform(nAlqIPI, cMaskPad)),             oFontDet, 050, 07, , nPadLeft,)
-					If !Empty(QRY_ITE->CK_XPRZENT)
-					oPrintPvt:SayAlign(nLinAtu, nPosEnt , Alltrim(aSX3Box[Val(QRY_ITE->CK_XPRZENT),3]),      oFontDet, 050, 07, , nPadLeft,)
-					EndIf
 				EndIf
 
 				nLinAtu += 10
@@ -462,12 +450,6 @@ Static Function fImpCab()
 	nLinCab += 10
 	oPrintPvt:SayAlign(nLinCab,   nColIni+65, "Telefone:",                                      oFontCabN, 060, 07, , nPadLeft, )
 	oPrintPvt:SayAlign(nLinCab,   nColIni+110, cEmpFax,                                         oFontCab,  120, 07, , nPadLeft, )
-	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab,   nColIni+65, "e-Mail:",                                        oFontCabN, 060, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab,   nColIni+110, cEmpEmail,                                       oFontCab,  120, 07, , nPadLeft, )
-	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab,   nColIni+65, "Site:",                                     		oFontCabN, 060, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab,   nColIni+110, cEmpSite,                                        oFontCab,  120, 07, , nPadLeft, )
 	nLinCab += 10
 	
 	//Dados do Orçamentox
@@ -569,7 +551,6 @@ Static Function fImpCab()
 		oPrintPvt:SayAlign(nLinCab,   nPosSTTo, "Vl.Total",         oFontDetN, 050, 07, , nPadLeft,)
 		oPrintPvt:SayAlign(nLinCab+10, nPosSTTo, "+ Imposto",       oFontDetN, 050, 07, , nPadLeft,)
 		oPrintPvt:SayAlign(nLinCab,   nPosAIcm, "A.ICMS",           oFontDetN, 050, 07, , nPadLeft,)
-		oPrintPvt:SayAlign(nLinCab,   nPosEnt , "Prz. Dias",        oFontDetN, 050, 07, , nPadLeft,)
 	 Else
 		oPrintPvt:SayAlign(nLinCab, nPosCod,  "Cod.Prod.",          oFontDetN, 100, 07, , nPadLeft,)
 		oPrintPvt:SayAlign(nLinCab, nPosDesc, "Descricao",          oFontDetN, 100, 07, , nPadLeft,)
@@ -582,7 +563,6 @@ Static Function fImpCab()
 		oPrintPvt:SayAlign(nLinCab+10, nPosVTot, "Livre Imp.", 		oFontDetN, 050, 07, , nPadLeft,)
 		oPrintPvt:SayAlign(nLinCab, nPosAIcm, "A.ICMS",             oFontDetN, 050, 07, , nPadLeft,)
 		oPrintPvt:SayAlign(nLinCab, nPosAIpi, "A.IPI",              oFontDetN, 050, 07, , nPadLeft,)
-		oPrintPvt:SayAlign(nLinCab, nPosEnt , "Prz. Dias",          oFontDetN, 050, 07, , nPadLeft,)
 	EndIf
 	
 	//Atualizando a linha inicial do relatório
@@ -678,7 +658,6 @@ Static Function fMudaLayout()
 		nPosSTVl := 0630 //Valor Unitario + ST
 		nPosSTTo := 0680 //Valor Total ST
 		nPosAIcm := 0730 //Aliquota ICMS
-		nPosEnt  := 0780 //Entrega
 		
 		oFontDet   := TFont():New(cNomeFont, , -10, , .F.)
 		oFontDetN  := TFont():New(cNomeFont, , -10, , .T.)
@@ -693,7 +672,6 @@ Static Function fMudaLayout()
 		nPosVTot := 0580 //Valor Total
 		nPosAIcm := 0650 //Aliquota ICMS
 		nPosAIpi := 0690 //Aliquota IPI
-		nPosEnt  := 0740 //Entrega
 		
 		oFontDet   := TFont():New(cNomeFont, , -10, , .F.)
 		oFontDetN  := TFont():New(cNomeFont, , -10, , .T.)
@@ -752,8 +730,8 @@ Local nLinMsg   := 0
 Local nId       := 0
 	
 	nLinAtu += 008
-	cMsg    := SCJ->CJ_XMSGI
-	nLinMsg := MLCount(SCJ->CJ_XMSGI,nTotCarac)
+	cMsg    := IIF(SCJ->(FieldPos("CJ_XMSGI") > 0),SCJ->CJ_XMSGI,"")
+	nLinMsg := MLCount(cMsg,nTotCarac)
 
 	//Se atingir o fim da Pagina, quebra
 	If nLinAtu + (nLinMsg*10) >= nLinFin

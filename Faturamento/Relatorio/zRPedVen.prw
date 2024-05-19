@@ -26,8 +26,6 @@ Static nPosSTBa   := 0000                                                       
 Static nPosSTTo   := 0000                                                                  //Posição Inicial da Coluna de Valor Total ST
 Static nPosEnt    := 0000                                                                  //Posição Inicial da Coluna de Data de Entrega
 Static nTamFundo  := 15                                                                    //Altura de fundo dos blocos com título
-Static cEmpEmail  := Alltrim(SuperGetMV("MV_X_EMAIL", .F., "email@empresa.com.br"))        //Parímetro com o e-Mail da empresa
-Static cEmpSite   := Alltrim(SuperGetMV("MV_X_HPAGE", .F., "http://www.empresa.com.br"))   //Parímetro com o site da empresa
 Static nCorAzul   := RGB(89, 111, 117)                                                     //Cor Azul usada nos Títulos
 Static cNomeFont  := "Arial"                                                               //Nome da Fonte Padrío
 Static oFontDet   := Nil                                                                   //Fonte utilizada na Impressão dos itens
@@ -166,23 +164,23 @@ Static Function fMontaRel(oProc)
 	cQryPed += "    C5_EMISSAO, "                                + CRLF
 	cQryPed += "    C5_CLIENTE, "                                + CRLF
 	cQryPed += "    C5_LOJACLI, "                                + CRLF
-	cQryPed += "    ISNULL(A1_NOME, '') AS A1_NOME, "       	 + CRLF
-	cQryPed += "    ISNULL(A1_NREDUZ, '') AS A1_NREDUZ, "      	 + CRLF
-	cQryPed += "    ISNULL(A1_PESSOA, '') AS A1_PESSOA, "        + CRLF
-	cQryPed += "    ISNULL(A1_CGC, '') AS A1_CGC, "              + CRLF
-	cQryPed += "    ISNULL(A1_END, '') AS A1_END, "              + CRLF
-	cQryPed += "    ISNULL(A1_BAIRRO, '') AS A1_BAIRRO, "        + CRLF
-	cQryPed += "    ISNULL(A1_MUN, '') AS A1_MUN, "              + CRLF
-	cQryPed += "    ISNULL(A1_EST, '') AS A1_EST, "              + CRLF
-	cQryPed += "    ISNULL(A1_DDD, '') AS A1_DDD, "       		 + CRLF
-	cQryPed += "    ISNULL(A1_TEL, '') AS A1_TEL, "       		 + CRLF
-	cQryPed += "    ISNULL(A1_EMAIL, '') AS A1_EMAIL, "       	 + CRLF
+	cQryPed += "    A1_NOME, "       	 						 + CRLF
+	cQryPed += "    A1_NREDUZ, "      	 						 + CRLF
+	cQryPed += "    A1_PESSOA, "        						 + CRLF
+	cQryPed += "    A1_CGC, "              						 + CRLF
+	cQryPed += "    A1_END, "              						 + CRLF
+	cQryPed += "    A1_BAIRRO, "        						 + CRLF
+	cQryPed += "    A1_MUN, "              						 + CRLF
+	cQryPed += "    A1_EST, "              						 + CRLF
+	cQryPed += "    A1_DDD, "       		 					 + CRLF
+	cQryPed += "    A1_TEL, "       		 					 + CRLF
+	cQryPed += "    A1_EMAIL, "       	 						 + CRLF
 	cQryPed += "    C5_CONDPAG, "                                + CRLF
-	cQryPed += "    ISNULL(E4_DESCRI, '') AS E4_DESCRI, "        + CRLF
+	cQryPed += "    E4_DESCRI, "        						 + CRLF
 	cQryPed += "    C5_TRANSP, "                                 + CRLF
-	cQryPed += "    ISNULL(A4_NREDUZ, '') AS A4_NREDUZ, "        + CRLF
+	cQryPed += "    A4_NREDUZ, "        						 + CRLF
 	cQryPed += "    C5_VEND1, "                                  + CRLF
-	cQryPed += "    ISNULL(A3_NREDUZ, '') AS A3_NREDUZ, "        + CRLF
+	cQryPed += "    A3_NREDUZ, "        						 + CRLF
 	cQryPed += "    C5_TPFRETE, "                                + CRLF
 	cQryPed += "    C5_FRETE, "                                  + CRLF
 	cQryPed += "    C5_PESOL, "                                  + CRLF
@@ -261,8 +259,8 @@ Static Function fMontaRel(oProc)
 			//Seleciona agora os itens do Pedido
 			cQryIte := " SELECT "                                      + CRLF
 			cQryIte += "    C6_PRODUTO, "                              + CRLF
-			cQryIte += "    ISNULL(B1_DESC, '') AS B1_DESC, "          + CRLF
-			cQryIte += "    ISNULL(B1_POSIPI, '') AS B1_POSIPI, "      + CRLF
+			cQryIte += "    B1_DESC, "          					   + CRLF
+			cQryIte += "    B1_POSIPI, "      						   + CRLF
 			cQryIte += "    C6_UM, "                                   + CRLF
 			cQryIte += "    C6_ENTREG, "                               + CRLF
 			cQryIte += "    C6_TES, "                                  + CRLF
@@ -483,12 +481,6 @@ Static Function fImpCab()
 	oPrintPvt:SayAlign(nLinCab,   nColIni+65, "Telefone:",                                      oFontCabN, 060, 07, , nPadLeft, )
 	oPrintPvt:SayAlign(nLinCab,   nColIni+110, cEmpFax,                                         oFontCab,  120, 07, , nPadLeft, )
 	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab,   nColIni+65, "e-Mail:",                                        oFontCabN, 060, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab,   nColIni+110, cEmpEmail,                                       oFontCab,  120, 07, , nPadLeft, )
-	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab,   nColIni+65, "Site:",                                     		oFontCabN, 060, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab,   nColIni+110, cEmpSite,                                        oFontCab,  120, 07, , nPadLeft, )
-	nLinCab += 10
 	
 	//Dados do Pedidox
 	nLinCab := nLinCabOrig
@@ -512,32 +504,30 @@ Static Function fImpCab()
 	cCGC := QRY_PED->A1_CGC
 	If lCNPJ
 		cCGC := Iif(!Empty(cCGC), Alltrim(Transform(cCGC, cMaskCNPJ)), "-")
-		oPrintPvt:SayAlign(nLinCab, nColMeio+8, "CNPJ:",                                        oFontCabN, 060, 07, , nPadLeft, )
+		oPrintPvt:SayAlign(nLinCab, nColMeio+8, "CNPJ:",                                        								oFontCabN, 060, 07, , nPadLeft, )
 	Else
 		cCGC := Iif(!Empty(cCGC), Alltrim(Transform(cCGC, cMaskCPF)), "-")
-		oPrintPvt:SayAlign(nLinCab, nColMeio+8, "CPF:",                                         oFontCabN, 060, 07, , nPadLeft, )
+		oPrintPvt:SayAlign(nLinCab, nColMeio+8, "CPF:",                                         								oFontCabN, 060, 07, , nPadLeft, )
 	EndIf
-	oPrintPvt:SayAlign(nLinCab, nColMeio+32, cCGC,                                              oFontCab,  300, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+32, cCGC,                                              								oFontCab,  300, 07, , nPadLeft, )
 	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Telefone:",	                                    oFontCabN, 035, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+045,"("+QRY_PED->A1_DDD+")",							oFontCab,  039, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+065,QRY_PED->A1_TEL,	 								oFontCab,  190, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Telefone:",	                                    								oFontCabN, 035, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+045,"("+QRY_PED->A1_DDD+")",															oFontCab,  039, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+065,QRY_PED->A1_TEL,	 																oFontCab,  190, 07, , nPadLeft, )
 	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "E-mail:",		                                    oFontCabN, 030, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+038, QRY_PED->A1_EMAIL,		 						oFontCab,  300, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "E-mail:",		                                    								oFontCabN, 030, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+038, QRY_PED->A1_EMAIL,		 														oFontCab,  300, 07, , nPadLeft, )
 	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Endereco:",	                                    oFontCabN, 040, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+048, QRY_PED->A1_END,			 						oFontCab,  300, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Endereco:",	                                    								oFontCabN, 040, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+048, QRY_PED->A1_END,			 														oFontCab,  300, 07, , nPadLeft, )
 	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Bairro, Cidade - UF:",                             oFontCabN, 090, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+100, QRY_PED->A1_BAIRRO, 								oFontCab,  130, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+200,","+QRY_PED->A1_MUN,	 							oFontCab,  180, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+300," - "+QRY_PED->A1_EST,								oFontCab,  200, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Bairro, Cidade - UF:",                             								oFontCabN, 090, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+080, Alltrim(QRY_PED->A1_BAIRRO)+", "+Alltrim(QRY_PED->A1_MUN)+" - "+QRY_PED->A1_EST, 	oFontCab,  130, 07, , nPadLeft, )
 	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Vendedor:",                                        oFontCabN, 060, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+50, QRY_PED->C5_VEND1 + " - "+QRY_PED->A3_NREDUZ,      oFontCab,  120, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Vendedor:",                                        								oFontCabN, 060, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+50, QRY_PED->C5_VEND1 + " - "+QRY_PED->A3_NREDUZ,      								oFontCab,  120, 07, , nPadLeft, )
 	nLinCab += 10
-	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Frete:",                                           oFontCabN, 060, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Frete:",                                           								oFontCabN, 060, 07, , nPadLeft, )
 	If QRY_PED->C5_TPFRETE == "C"
 		cFretePed := "CIF"
 	ElseIf QRY_PED->C5_TPFRETE == "F"
@@ -548,10 +538,10 @@ Static Function fImpCab()
 		cFretePed := "Sem Frete"
 	EndIf
 	cFretePed += " - "+Alltrim(Transform(QRY_PED->C5_FRETE, cMaskFrete))
-	oPrintPvt:SayAlign(nLinCab, nColMeio+32, cFretePed,                                         oFontCab,  060, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+32, cFretePed,                                         								oFontCab,  060, 07, , nPadLeft, )
 	nLinCab += 13
-	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Natureza:",                                        oFontCabN, 060, 07, , nPadLeft, )
-	oPrintPvt:SayAlign(nLinCab, nColMeio+50, Upper(Posicione("SED",1,FwxFilial("SED")+QRY_PED->C5_NATUREZ,"ED_DESCRIC")), oFontCab,  200, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+8, "Natureza:",                                        								oFontCabN, 060, 07, , nPadLeft, )
+	oPrintPvt:SayAlign(nLinCab, nColMeio+50, Upper(Posicione("SED",1,FwxFilial("SED")+QRY_PED->C5_NATUREZ,"ED_DESCRIC")), 		oFontCab,  200, 07, , nPadLeft, )
 	//Código de barras
 	nLinCab := nLinCabOrig
 	If cTipoBar $ "1;2"
