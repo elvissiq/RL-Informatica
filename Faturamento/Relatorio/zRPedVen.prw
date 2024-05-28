@@ -405,15 +405,15 @@ Static Function fMontaRel(oProc)
 			//Imprime o Total do Pedido
 			fImpTot()
 			
-			//Se tiver mensagem da observacao
-			If !Empty(QRY_PED->C5_MENNOTA)
-				fMsgObs()
-			EndIf
-			
 			//Se deveria ser impresso as duplicatas
 			If cImpDupl == "1"
 				fImpDupl()
 			EndIf
+
+			//Se tiver mensagem da observacao
+			//If !Empty(QRY_PED->C5_MENNOTA)
+				fMsgObs()
+			//EndIf
 			
 			//Imprime o rodape
 			fImpRod()
@@ -760,49 +760,35 @@ Return
  *---------------------------------------------------------------------*/
 
 Static Function fMsgObs()
-	Local aMsg  := {"", "", ""}
-	Local nQueb := 100
-	Local cMsg  := Alltrim(QRY_PED->C5_MENNOTA)
-	nLinAtu += 4
+	Local cMsg      := ""
+	Local nTotCarac := 200
+	Local nLinMsg   := 0
+	Local nId       := 0
 	
-	//Se atingir o fim da Página, quebra
-	If nLinAtu + 40 >= nLinFin
-		fImpRod()
-		fImpCab()
-	EndIf
+	cMsg    := IIF(SC5->(FieldPos("C5_MENPAD") > 0),Formula(SC5->C5_MENPAD) + (Chr(10)+Chr(13)),"")
+	cMsg    += IIF(SC5->(FieldPos("C5_XMSGI") > 0),SC5->C5_XMSGI,"")
 	
-	//Quebrando a mensagem
-	If Len(cMsg) > nQueb
-		aMsg[1] := SubStr(cMsg,    1, nQueb)
-		aMsg[1] := SubStr(aMsg[1], 1, RAt(' ', aMsg[1]))
+	If !Empty(cMsg)
+		nLinAtu += 008
+		nLinMsg := IIF(MLCount(cMsg,nTotCarac)>0,MLCount(cMsg,nTotCarac),1)
 		
-		//Pegando o restante e adicionando nas outras linhas
-		cMsg := Alltrim(SubStr(cMsg, Len(aMsg[1])+1, Len(cMsg)))
-		If Len(cMsg) > nQueb
-			aMsg[2] := SubStr(cMsg,    1, nQueb)
-			aMsg[2] := SubStr(aMsg[2], 1, RAt(' ', aMsg[2]))
-			
-			cMsg := Alltrim(SubStr(cMsg, Len(aMsg[2])+1, Len(cMsg)))
-			aMsg[3] := cMsg
-		Else
-			aMsg[2] := cMsg
+		//Se atingir o fim da Pagina, quebra
+		If nLinAtu + (nLinMsg*10) >= nLinFin
+			fImpRod()
+			fImpCab()
 		EndIf
-	Else
-		aMsg[1] := cMsg
-	EndIf
-	
-	//Cria o grupo de observação
-	oPrintPvt:Box(nLinAtu, nColIni, nLinAtu + 038, nColFin)
-	oPrintPvt:Line(nLinAtu+nTamFundo, nColIni, nLinAtu+nTamFundo, nColFin)
-	nLinAtu += nTamFundo - 5
-	oPrintPvt:SayAlign(nLinAtu-10, nColIni+5, "Observacao:",                oFontTit,  100, nTamFundo, nCorAzul, nPadLeft, )
-	nLinAtu += 5
-	oPrintPvt:SayAlign(nLinAtu, nColIni+0005, aMsg[1],                      oFontCab,  400, 07, , nPadLeft, )
-	nLinAtu += 7
-	oPrintPvt:SayAlign(nLinAtu, nColIni+0005, aMsg[2],                      oFontCab,  400, 07, , nPadLeft, )
-	nLinAtu += 7
-	oPrintPvt:SayAlign(nLinAtu, nColIni+0005, aMsg[3],                      oFontCab,  400, 07, , nPadLeft, )
-	nLinAtu += 10
+
+		//Cria o grupo de Observação
+		oPrintPvt:SayAlign(nLinAtu, nColIni, "Observações: ",   oFontTit,  100, nTamFundo, nCorAzul, nPadLeft, )
+		nLinAtu += 015
+		
+		For nId := 1 To nLinMsg
+			oPrintPvt:SayAlign(nLinAtu, nColIni, MemoLine(cMsg,nTotCarac,nId),    oFontCab,  2000, 07, , nPadLeft, )
+		nLinAtu += 008
+		Next nId
+		nLinAtu += 010
+	EndIF
+
 Return
 
 /*---------------------------------------------------------------------*
