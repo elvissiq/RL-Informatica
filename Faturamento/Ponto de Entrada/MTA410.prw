@@ -5,7 +5,7 @@
 FUNÇÃO MTA410 - Ponto de entrada na validação do Pedido de Venda
 @OWNER TOTVS Nordeste
 @VERSION PROTHEUS 12
-@SINCE 15/05/2024
+@SINCE 24/05/2024
 @Geração de SC ou OP conforme informado no item do Pedido de Venda
 /*/
 
@@ -46,6 +46,7 @@ User Function MTA410()
 			aAdd(aLinha, {'C1_DATPRF' , aCols[nY,nPosDtEnt] 					, Nil} )
 			aAdd(aLinha, {'C1_XNEMPEM', M->C5_XNEMPEM       					, Nil} )
 			aAdd(aLinha, {'C1_OBS'    , 'SC Gerada Pedido de Venda '+ M->C5_NUM , Nil} )
+			aAdd(aLinha, {'C1_ORIGEM' , Alltrim(FunName()) 						, Nil} )
 			aAdd(aItemSC,aLinha)
 
 		ElseIF aCols[nY, nPosC6Ger] == 'S' //Itens que geram Ordem de Produção
