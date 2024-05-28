@@ -379,11 +379,11 @@ Static Function fMontaRel(oProc)
 			fImpTot()
 			
 			//Se tiver observações
-			If SCJ->(FieldPos("CJ_XMSGI") > 0)
-				If !Empty(SCJ->CJ_XMSGI)
+			//If SCJ->(FieldPos("CJ_XMSGI") > 0)
+				//If !Empty(SCJ->CJ_XMSGI)
 					fMsgObs()
-				EndIf 
-			EndIf
+				//EndIf 
+			//EndIf
 			
 			//Imprime o rodape
 			fImpRod()
@@ -725,28 +725,34 @@ Return
 
 Static Function fMsgObs()
 Local cMsg      := ""
-Local nTotCarac := 70
+Local nTotCarac := 200
 Local nLinMsg   := 0
 Local nId       := 0
 	
-	nLinAtu += 008
-	cMsg    := IIF(SCJ->(FieldPos("CJ_XMSGI") > 0),SCJ->CJ_XMSGI,"")
-	nLinMsg := MLCount(cMsg,nTotCarac)
-
-	//Se atingir o fim da Pagina, quebra
-	If nLinAtu + (nLinMsg*10) >= nLinFin
-		fImpRod()
-		fImpCab()
-	EndIf
-
-	//Cria o grupo de Observação
-	oPrintPvt:SayAlign(nLinAtu, nColIni, "Observações: ",   oFontTit,  100, nTamFundo, nCorAzul, nPadLeft, )
-	nLinAtu += 015
+	cMsg    := IIF(SCJ->(FieldPos("CJ_XMENPAD") > 0),Formula(SCJ->CJ_XMENPAD) + (Chr(10)+Chr(13)),"")
+	cMsg    += IIF(SCJ->(FieldPos("CJ_XMSGI") > 0),SCJ->CJ_XMSGI,"")
 	
-	For nId := 1 To nLinMsg
-		oPrintPvt:SayAlign(nLinAtu, nColIni, MemoLine(cMsg,nTotCarac,nId),    oFontCab,  540, 07, , nPadLeft, )
-	nLinAtu += 008
-	Next nId
-	nLinAtu += 010
+	If !Empty(cMsg)
+
+		nLinAtu += 008
+		nLinMsg := IIF(MLCount(cMsg,nTotCarac)>0,MLCount(cMsg,nTotCarac),1)
+		
+		//Se atingir o fim da Pagina, quebra
+		If nLinAtu + (nLinMsg*10) >= nLinFin
+			fImpRod()
+			fImpCab()
+		EndIf
+
+		//Cria o grupo de Observação
+		oPrintPvt:SayAlign(nLinAtu, nColIni, "Observações: ",   oFontTit,  100, nTamFundo, nCorAzul, nPadLeft, )
+		nLinAtu += 015
+		
+		For nId := 1 To nLinMsg
+			oPrintPvt:SayAlign(nLinAtu, nColIni, MemoLine(cMsg,nTotCarac,nId),    oFontCab,  2000, 07, , nPadLeft, )
+		nLinAtu += 008
+		Next nId
+		nLinAtu += 010
+	
+	EndIF 
 
 Return
