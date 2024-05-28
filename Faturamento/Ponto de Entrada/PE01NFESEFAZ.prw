@@ -9,7 +9,7 @@ Através deste ponto é possível realizar manipulações nos dados do produto,
 mensagens adicionais, destinatário, dados da nota, pedido de venda ou compra, antes da 
 montagem do XML, no momento da transmissão da NFe.
 @author TOTVS NORDESTE (Elvis Siqueira)
-@since 12/04/2024
+@since 24/05/2024
 @version 1.0
     @return Nil
         PE01NFESEFAZ - Manipulação em dados do produto ( [ aParam ] ) --> aRetorno
@@ -57,45 +57,30 @@ User Function PE01NFESEFAZ()
     Local aProcRef  := PARAMIXB[18]
     Local aRetorno  := {}
 
-    Local aArea		:= GetArea()
-    Local aAreaSC5  := SC5->(GetArea())
-    Local nVolume   := 0
+    Local aAreaSD2	:= SD2->(FWGetArea())
     Local _nI	    := 0
 
-    DBSelectArea("SD2")
-    SD2->(DBSetOrder(3))
-    
+    If aNota[4] == "1" // Se for Nota Fiscal de Saída 
 
-        cMensCli := cMensCli
+        DBSelectArea("SD2")
+        SD2->(DBSetOrder(3)) 
         
-        DBSelectArea("SA1")
-        SA1->(MsSeek(FWxFilial("SA1")+aNota))
-        If Empty(cMensCli)
-            cMensCli += ""
-        Else
-            cMensCli += ""   
-        EndIF
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        //@ Bloco responsável por acrescenta o Número de Série. ///// INICIO /////
+        For _nI :=1  to Len(aProd)
+            SD2->(MsSeek(xFilial("SD2")+aNota[2]+aNota[1]+aNota[7]+aNota[8]+aProd[_nI][2]+STrZero(aProd[_nI][1],2))) //D2_FILIAL+D2_DOC+D2_SERIE+D2_CLIENTE+D2_LOJA+D2_COD+D2_ITEM
 
+            If !Empty(SD2->D2_NUMSERI)
+                aProd[_nI][4] := Alltrim(aProd[_nI][4]) + " - Numero de Serie: " + Alltrim(SD2->D2_NUMSERI)
+            EndIF 
 
-    For _nI :=1  to Len(aProd)
-        
-        nVolume += aProd[_nI,9]
+        Next _nI
+        //@ Bloco responsável por acrescenta o Número de Série. ///// FIM /////
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        //////////// Mensagem na Nota Fiscal ///////////////
-                
-            cMensCli += ""
-        
-        //////////// FIM da Mensagem na Nota Fiscal ///////////////
-
-    Next _nI
-    //@ Bloco responsável por alterar a descrição do produto do campo B5_DESC para B5_ESPECIF. FIM
-
-    If !Empty(aEspVol)
-        aEspVol[1,2] := nVolume
     EndIF 
-
-    RestArea(aAreaSC5)
-    RestArea(aArea)
+    
+    FWRestArea(aAreaSD2)
 
     aadd(aRetorno,aProd)
     aadd(aRetorno,cMensCli)
