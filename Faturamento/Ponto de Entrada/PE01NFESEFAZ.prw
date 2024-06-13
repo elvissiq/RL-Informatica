@@ -9,7 +9,7 @@ Através deste ponto é possível realizar manipulações nos dados do produto,
 mensagens adicionais, destinatário, dados da nota, pedido de venda ou compra, antes da 
 montagem do XML, no momento da transmissão da NFe.
 @author TOTVS NORDESTE (Elvis Siqueira)
-@since 24/05/2024
+@since 06/06/2024
 @version 1.0
     @return Nil
         PE01NFESEFAZ - Manipulação em dados do produto ( [ aParam ] ) --> aRetorno
@@ -58,7 +58,9 @@ User Function PE01NFESEFAZ()
     Local aRetorno  := {}
 
     Local aAreaSD2	:= SD2->(FWGetArea())
-    Local _nI	    := 0
+    Local cPictVal  := PesqPict("SF2","F2_VALCSLL")
+    Local cImpostos := ""
+    Local _nI
 
     If aNota[4] == "1" // Se for Nota Fiscal de Saída 
 
@@ -80,6 +82,23 @@ User Function PE01NFESEFAZ()
 
     EndIF 
     
+    If !Empty(SF2->F2_VALIRRF)
+        cImpostos += "IR: R$ " + Alltrim(AllToChar(SF2->F2_VALIRRF, cPictVal))
+    EndIF
+    If !Empty(SF2->F2_VALCSLL)
+        cImpostos += IIF(!Empty(cImpostos), " | CSLL: R$ " + Alltrim(AllToChar(SF2->F2_VALCSLL, cPictVal)), "CSLL: R$ " + Alltrim(AllToChar(SF2->F2_VALCSLL, cPictVal)) )
+    EndIF
+    If !Empty(SF2->F2_VALPIS)
+        cImpostos += IIF(!Empty(cImpostos), " | PIS: R$ " + Alltrim(AllToChar(SF2->F2_VALPIS, cPictVal)), "PIS: R$ " + Alltrim(AllToChar(SF2->F2_VALPIS, cPictVal)) )
+    EndIF
+    If !Empty(SF2->F2_VALCOFI)
+        cImpostos += IIF(!Empty(cImpostos), " | COFINS: R$ " + Alltrim(AllToChar(SF2->F2_VALCOFI, cPictVal)), "COFINS: R$ " + Alltrim(AllToChar(SF2->F2_VALCOFI, cPictVal)) )
+    EndIF
+
+    If Empty(cImpostos)
+        cMensCli := cMensCli + ENTER + cImpostos 
+    EndIF 
+
     FWRestArea(aAreaSD2)
 
     aadd(aRetorno,aProd)
