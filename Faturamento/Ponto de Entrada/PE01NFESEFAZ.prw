@@ -60,6 +60,7 @@ User Function PE01NFESEFAZ()
     Local aAreaSD2	:= SD2->(FWGetArea())
     Local cPictVal  := PesqPict("SF2","F2_VALCSLL")
     Local cImpostos := ""
+    Local nVolume   := 0
     Local _nI
 
     If aNota[4] == "1" // Se for Nota Fiscal de Saída 
@@ -70,6 +71,9 @@ User Function PE01NFESEFAZ()
         //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //@ Bloco responsável por acrescenta o Número de Série. ///// INICIO /////
         For _nI :=1  to Len(aProd)
+            
+            nVolume += aProd[nId,9] //Soma a quantidade dos produtos
+            
             SD2->(MsSeek(xFilial("SD2")+aNota[2]+aNota[1]+aNota[7]+aNota[8]+aProd[_nI][2]+STrZero(aProd[_nI][1],2))) //D2_FILIAL+D2_DOC+D2_SERIE+D2_CLIENTE+D2_LOJA+D2_COD+D2_ITEM
 
             If !Empty(SD2->D2_NUMSERI)
@@ -98,6 +102,10 @@ User Function PE01NFESEFAZ()
     If Empty(cImpostos)
         cMensCli := cMensCli + ENTER + cImpostos 
     EndIF 
+
+    If !Empty(aVolume)
+        aVolume[1,2] := nVolume
+    EndIF
 
     FWRestArea(aAreaSD2)
 
