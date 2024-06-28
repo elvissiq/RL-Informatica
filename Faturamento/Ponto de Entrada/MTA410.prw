@@ -7,6 +7,8 @@ FUNÇÃO MTA410 - Ponto de entrada na validação do Pedido de Venda
 @VERSION PROTHEUS 12
 @SINCE 24/05/2024
 @Geração de SC ou OP conforme informado no item do Pedido de Venda
+@Historico
+	28/06/2024 - função fGeraNum (Elvis Siqueira)
 /*/
 
 User Function MTA410()
@@ -53,18 +55,18 @@ User Function MTA410()
 			
 			aLinha := {}
 
-			aAdd(aLinha, {'C2_NUM'    , IIF(nOption == 3, GetSxeNum("SC2","C2_NUM"), "")  	, Nil} )
-			aAdd(aLinha, {'C2_ITEM'   , '01'                       							, Nil} )
-			aAdd(aLinha, {'C2_SEQUEN' , '001'                      							, Nil} )
-			aAdd(aLinha, {'C2_PRODUTO', aCols[nY,nPosProd]         							, Nil} )
-			aAdd(aLinha, {'C2_QUANT'  , aCols[nY,nPosQuant]        							, Nil} )
-			aAdd(aLinha, {'C2_LOCAL'  , aCols[nY,nPosLocal]        							, Nil} )
-			aAdd(aLinha, {'C2_DATPRI' , M->C5_EMISSAO        	   							, Nil} )
-			aAdd(aLinha, {'C2_DATPRF' , M->C5_EMISSAO              							, Nil} )
-			aAdd(aLinha, {'C2_EMISSAO', M->C5_EMISSAO              							, Nil} )
-			aAdd(aLinha, {'C2_XNEMPEM', M->C5_XNEMPEM              							, Nil} )
-			aAdd(aLinha, {'C2_OBS'    , 'OP Gerada Pedido de Venda '+ M->C5_NUM 			, Nil} )
-			aAdd(aLinha, {'AUTEXPLODE', 'S'                        							, Nil} )
+			aAdd(aLinha, {'C2_NUM'    , IIF(nOption == 3, fGeraNum("C2"), "")  		, Nil} )
+			aAdd(aLinha, {'C2_ITEM'   , '01'                       					, Nil} )
+			aAdd(aLinha, {'C2_SEQUEN' , '001'                      					, Nil} )
+			aAdd(aLinha, {'C2_PRODUTO', aCols[nY,nPosProd]         					, Nil} )
+			aAdd(aLinha, {'C2_QUANT'  , aCols[nY,nPosQuant]        					, Nil} )
+			aAdd(aLinha, {'C2_LOCAL'  , aCols[nY,nPosLocal]        					, Nil} )
+			aAdd(aLinha, {'C2_DATPRI' , M->C5_EMISSAO        	   					, Nil} )
+			aAdd(aLinha, {'C2_DATPRF' , M->C5_EMISSAO              					, Nil} )
+			aAdd(aLinha, {'C2_EMISSAO', M->C5_EMISSAO              					, Nil} )
+			aAdd(aLinha, {'C2_XNEMPEM', M->C5_XNEMPEM              					, Nil} )
+			aAdd(aLinha, {'C2_OBS'    , 'OP Gerada Pedido de Venda '+ M->C5_NUM 	, Nil} )
+			aAdd(aLinha, {'AUTEXPLODE', 'S'                        					, Nil} )
 			aAdd(aVetorOP,aLinha)
 
 		EndIF 
@@ -72,9 +74,9 @@ User Function MTA410()
 	Next
 
 	If !Empty(aItemSC)
-		aAdd(aCabec, {'C1_NUM'     , IIF(nOption == 3, GetSxeNum("SC1","C1_NUM"), "") , Nil})
-		aAdd(aCabec, {'C1_SOLICIT' , cUserName                 						  , Nil})
-		aAdd(aCabec, {'C1_EMISSAO' , M->C5_EMISSAO             						  , Nil})
+		aAdd(aCabec, {'C1_NUM'     , IIF(nOption == 3, fGeraNum("C1"), "")	, Nil})
+		aAdd(aCabec, {'C1_SOLICIT' , cUserName                 				, Nil})
+		aAdd(aCabec, {'C1_EMISSAO' , M->C5_EMISSAO             				, Nil})
 	EndIF 
 
 	If nOption == 4
@@ -158,3 +160,30 @@ User Function MTA410()
 	FWRestArea(aArea)
 
 Return(lRet)
+
+/*/{Protheus.doc} fGeraNum
+	Gera o próximo número do documento
+	@type  Static Function
+	@author Elvis Siqueira (TOTVS Recife)
+	@since 28/06/2024
+/*/
+Static Function fGeraNum(pTab)
+	Local cNum  := ""
+	Local cQry  := ""
+	Local cAPrx	:= GetNextAlias()
+
+	cQry := " SELECT MAX("+pTab+"_NUM) ULTIMO "
+	cQry += " FROM " + RetSqlName("S"+pTab)
+	cQry += " WHERE "+pTab+"_FILIAL = '" + xFilial("S"+pTab) + "' "
+	cQry := ChangeQuery(cQry)
+	dbUseArea(.T.,"TOPCONN",TcGenQry(,,cQry),cAPrx,.F.,.T.)
+
+    IF (cAPrx)->(!Eof())
+        cNum := Soma1((cAPrx)->ULTIMO)
+    Else 
+        cNum := StrZero(1,FWTamSX3(pTab+"_NUM")[1])
+    EndIF 
+    
+    (cAPrx)->(DbCloseArea())
+	
+Return cNum
