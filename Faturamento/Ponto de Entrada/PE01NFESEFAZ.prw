@@ -72,7 +72,7 @@ User Function PE01NFESEFAZ()
         //@ Bloco responsável por acrescenta o Número de Série. ///// INICIO /////
         For _nI :=1  to Len(aProd)
             
-            nVolume += aProd[nId,9] //Soma a quantidade dos produtos
+            nVolume += aProd[_nI,9] //Soma a quantidade dos produtos
             
             SD2->(MsSeek(xFilial("SD2")+aNota[2]+aNota[1]+aNota[7]+aNota[8]+aProd[_nI][2]+STrZero(aProd[_nI][1],2))) //D2_FILIAL+D2_DOC+D2_SERIE+D2_CLIENTE+D2_LOJA+D2_COD+D2_ITEM
 
@@ -103,8 +103,8 @@ User Function PE01NFESEFAZ()
         cMensCli := cMensCli + ENTER + cImpostos 
     EndIF 
 
-    If !Empty(aVolume)
-        aVolume[1,2] := nVolume
+    If !Empty(aEspVol)
+        aEspVol[1,2] := nVolume
     EndIF
 
     FWRestArea(aAreaSD2)
