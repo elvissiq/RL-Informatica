@@ -86,17 +86,20 @@ User Function PE01NFESEFAZ()
 
     EndIF 
     
-    If !Empty(SF2->F2_VALIRRF)
-        cImpostos += "IR: R$ " + Alltrim(AllToChar(SF2->F2_VALIRRF, cPictVal))
-    EndIF
-    If !Empty(SF2->F2_VALCSLL)
-        cImpostos += IIF(!Empty(cImpostos), " | CSLL: R$ " + Alltrim(AllToChar(SF2->F2_VALCSLL, cPictVal)), "CSLL: R$ " + Alltrim(AllToChar(SF2->F2_VALCSLL, cPictVal)) )
-    EndIF
-    If !Empty(SF2->F2_VALPIS)
-        cImpostos += IIF(!Empty(cImpostos), " | PIS: R$ " + Alltrim(AllToChar(SF2->F2_VALPIS, cPictVal)), "PIS: R$ " + Alltrim(AllToChar(SF2->F2_VALPIS, cPictVal)) )
-    EndIF
-    If !Empty(SF2->F2_VALCOFI)
-        cImpostos += IIF(!Empty(cImpostos), " | COFINS: R$ " + Alltrim(AllToChar(SF2->F2_VALCOFI, cPictVal)), "COFINS: R$ " + Alltrim(AllToChar(SF2->F2_VALCOFI, cPictVal)) )
+    DBSelectArea("SF2")
+    IF SF2->(MSSeek(xFilial("SD2")+aNota[2]+aNota[1]+aNota[7]+aNota[8])) 
+        If !Empty(SF2->F2_VALIRRF)
+            cImpostos += "IR: R$ " + Alltrim(AllToChar(SF2->F2_VALIRRF, cPictVal))
+        EndIF
+        If !Empty(SF2->F2_VALCSLL)
+            cImpostos += IIF(!Empty(cImpostos), " | CSLL: R$ " + Alltrim(AllToChar(SF2->F2_VALCSLL, cPictVal)), "CSLL: R$ " + Alltrim(AllToChar(SF2->F2_VALCSLL, cPictVal)) )
+        EndIF
+        If !Empty(SF2->F2_VALPIS)
+            cImpostos += IIF(!Empty(cImpostos), " | PIS: R$ " + Alltrim(AllToChar(SF2->F2_VALPIS, cPictVal)), "PIS: R$ " + Alltrim(AllToChar(SF2->F2_VALPIS, cPictVal)) )
+        EndIF
+        If !Empty(SF2->F2_VALCOFI)
+            cImpostos += IIF(!Empty(cImpostos), " | COFINS: R$ " + Alltrim(AllToChar(SF2->F2_VALCOFI, cPictVal)), "COFINS: R$ " + Alltrim(AllToChar(SF2->F2_VALCOFI, cPictVal)) )
+        EndIF
     EndIF
 
     If Empty(cImpostos)
