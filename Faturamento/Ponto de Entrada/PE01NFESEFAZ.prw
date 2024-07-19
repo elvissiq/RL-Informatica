@@ -87,7 +87,7 @@ User Function PE01NFESEFAZ()
     EndIF 
     
     DBSelectArea("SF2")
-    IF SF2->(MSSeek(xFilial("SD2")+aNota[2]+aNota[1]+aNota[7]+aNota[8])) 
+    IF SF2->(MSSeek(xFilial("SF2")+aNota[2]+aNota[1]+aNota[7]+aNota[8])) 
         If !Empty(SF2->F2_VALIRRF)
             cImpostos += "IR: R$ " + Alltrim(AllToChar(SF2->F2_VALIRRF, cPictVal))
         EndIF
