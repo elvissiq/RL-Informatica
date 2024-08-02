@@ -9,6 +9,7 @@ FUNÇÃO MTA410 - Ponto de entrada na validação do Pedido de Venda
 @Geração de SC ou OP conforme informado no item do Pedido de Venda
 @Historico
 	28/06/2024 - função fGeraNum (Elvis Siqueira)
+	02/08/2024 - Lógica quando não gera SC nem OP (Elvis Siqueira)
 /*/
 
 User Function MTA410()
@@ -73,79 +74,86 @@ User Function MTA410()
 
 	Next
 
+	If Empty(aItemSC) .And. Empty(aVetorOP) 
+		Return(lRet)
+	EndIF
+
 	If !Empty(aItemSC)
-		aAdd(aCabec, {'C1_NUM'     , IIF(nOption == 3, fGeraNum("C1"), "")	, Nil})
-		aAdd(aCabec, {'C1_SOLICIT' , cUserName                 				, Nil})
-		aAdd(aCabec, {'C1_EMISSAO' , M->C5_EMISSAO             				, Nil})
-	EndIF 
-
-	If nOption == 4
-		cWhere := "% SC1.C1_XNEMPEM = '"+ M->C5_XNEMPEM +"'%"
-
-		BeginSql Alias "SQL_SC1"           
-			SELECT    
-				SC1.C1_NUM
-			FROM
-				%table:SC1% SC1 
-			WHERE
-				SC1.C1_FILIAL = %xFilial:SC1%
-				AND %Exp:cWhere%
-				AND SC1.%notDel%
-    	EndSql
-
-		If SQL_SC1->(!Eof())
-			DBSelectArea('SC1')
-			SC1->(MSSeek(xFilial('SC1')+SQL_SC1->C1_NUM))
-
-			aCabec[1,2] := SC1->C1_NUM
-			aCabec[2,2] := SC1->C1_SOLICIT
-			aCabec[3,2] := SC1->C1_EMISSAO
-
-		EndIF 
 		
-		SQL_SC1->(dbCloseArea())
-	EndIF 
-	
-	If !Empty(aCabec) .And. !Empty(aItemSC)
-		MSExecAuto({|x,y,z| MATA110(x,y,z)}, aCabec, aItemSC, nOption)
-	EndIF 
-	
-	If !lMsErroAuto
-		
-		If nOption == 4
-			cWhere := "% SC2.C2_XNEMPEM = '"+ M->C5_XNEMPEM +"'%"
+		If nOption == 3 //Se for inclusão
+			aAdd(aCabec, {'C1_NUM'     , IIF(nOption == 3, fGeraNum("C1"), "")	, Nil})
+			aAdd(aCabec, {'C1_SOLICIT' , cUserName                 				, Nil})
+			aAdd(aCabec, {'C1_EMISSAO' , M->C5_EMISSAO             				, Nil}) 
+		EndIf
 
-			BeginSql Alias "SQL_SC2"           
+		If nOption == 4 //Se for alteração
+			cWhere := "% SC1.C1_XNEMPEM = '"+ M->C5_XNEMPEM +"'%"
+
+			BeginSql Alias "SQL_SC1"           
 				SELECT    
-					SC2.C2_NUM
+					SC1.C1_NUM
 				FROM
-					%table:SC2% SC2 
+					%table:SC1% SC1 
 				WHERE
-					SC2.C2_FILIAL  = %xFilial:SC2%
+					SC1.C1_FILIAL = %xFilial:SC1%
 					AND %Exp:cWhere%
-					AND SC2.%notDel%
+					AND SC1.%notDel%
 			EndSql
 
-			If SQL_SC2->(!Eof())
-				DBSelectArea('SC2')
-				SC2->(MSSeek(xFilial('SC2')+SQL_SC2->C2_NUM))
-			EndIF
+			If SQL_SC1->(!Eof())
+				DBSelectArea('SC1')
+				SC1->(MSSeek(xFilial('SC1')+SQL_SC1->C1_NUM))
 
-			SQL_SC2->(dbCloseArea())
-		EndIF
+				aCabec[1,2] := SC1->C1_NUM
+				aCabec[2,2] := SC1->C1_SOLICIT
+				aCabec[3,2] := SC1->C1_EMISSAO
+
+			EndIF 
+			
+			SQL_SC1->(dbCloseArea())
+		EndIF 
+		
+		lMsErroAuto := .F.
+
+		If !Empty(aCabec) .And. !Empty(aItemSC)
+			MSExecAuto({|x,y,z| MATA110(x,y,z)}, aCabec, aItemSC, nOption)
+		EndIF 
+	EndIF
+
+	If !lMsErroAuto
 
 		If Len(aVetorOP) > 0
 
-			lMsErroAuto := .F.
+			If nOption == 4
+				cWhere := "% SC2.C2_XNEMPEM = '"+ M->C5_XNEMPEM +"'%"
+
+				BeginSql Alias "SQL_SC2"           
+					SELECT    
+						SC2.C2_NUM
+					FROM
+						%table:SC2% SC2 
+					WHERE
+						SC2.C2_FILIAL  = %xFilial:SC2%
+						AND %Exp:cWhere%
+						AND SC2.%notDel%
+				EndSql
+
+				If SQL_SC2->(!Eof())
+					DBSelectArea('SC2')
+					SC2->(MSSeek(xFilial('SC2')+SQL_SC2->C2_NUM))
+				EndIF
+
+				SQL_SC2->(dbCloseArea())
+			EndIF
 
 			For nY := 1 To Len(aVetorOP)
 				
+				lMsErroAuto := .F.
+
 				MSExecAuto({|x, y| mata650(x, y)}, aVetorOP[nY], nOption)
 
 				If lMsErroAuto
-					
 					MostraErro()
-
 				EndIF 
 			Next 
 		EndIF 
