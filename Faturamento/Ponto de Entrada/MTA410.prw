@@ -2,14 +2,14 @@
 
 //------------------------------------------------------------------------
 /*/{PROTHEUS.DOC} MTA410
-FUNÇÃO MTA410 - Ponto de entrada na validação do Pedido de Venda
+FUNÃ‡ÃƒO MTA410 - Ponto de entrada na validaÃ§Ã£o do Pedido de Venda
 @OWNER TOTVS Nordeste
 @VERSION PROTHEUS 12
 @SINCE 24/05/2024
-@Geração de SC ou OP conforme informado no item do Pedido de Venda
+@GeraÃ§Ã£o de SC ou OP conforme informado no item do Pedido de Venda
 @Historico
-	28/06/2024 - função fGeraNum (Elvis Siqueira)
-	02/08/2024 - Lógica quando não gera SC nem OP (Elvis Siqueira)
+	28/06/2024 - funÃ§Ã£o fGeraNum (Elvis Siqueira)
+	02/08/2024 - LÃ³gica quando nÃ£o gera SC nem OP (Elvis Siqueira)
 /*/
 
 User Function MTA410()
@@ -38,7 +38,7 @@ User Function MTA410()
 
 	For nY := 1 To Len(aCols)
 
-		If aCols[nY, nPosC6Ger] == 'N' //Itens que geram Ordem de Produção
+		If aCols[nY, nPosC6Ger] == 'N' //Itens que geram Ordem de ProduÃ§Ã£o
 			
 			aLinha := {}
 
@@ -52,7 +52,7 @@ User Function MTA410()
 			aAdd(aLinha, {'C1_ORIGEM' , Alltrim(FunName()) 						, Nil} )
 			aAdd(aItemSC,aLinha)
 
-		ElseIF aCols[nY, nPosC6Ger] == 'S' //Itens que geram Ordem de Produção
+		ElseIF aCols[nY, nPosC6Ger] == 'S' //Itens que geram Ordem de ProduÃ§Ã£o
 			
 			aLinha := {}
 
@@ -80,13 +80,11 @@ User Function MTA410()
 
 	If !Empty(aItemSC)
 		
-		If nOption == 3 //Se for inclusão
-			aAdd(aCabec, {'C1_NUM'     , IIF(nOption == 3, fGeraNum("C1"), "")	, Nil})
-			aAdd(aCabec, {'C1_SOLICIT' , cUserName                 				, Nil})
-			aAdd(aCabec, {'C1_EMISSAO' , M->C5_EMISSAO             				, Nil}) 
-		EndIf
+		aAdd(aCabec, {'C1_NUM'     , IIF(nOption == 3, fGeraNum("C1"), "")	, Nil})
+		aAdd(aCabec, {'C1_SOLICIT' , cUserName                 				, Nil})
+		aAdd(aCabec, {'C1_EMISSAO' , M->C5_EMISSAO             				, Nil}) 
 
-		If nOption == 4 //Se for alteração
+		If nOption == 4 //Se for alteraÃ§Ã£o
 			cWhere := "% SC1.C1_XNEMPEM = '"+ M->C5_XNEMPEM +"'%"
 
 			BeginSql Alias "SQL_SC1"           
@@ -170,7 +168,7 @@ User Function MTA410()
 Return(lRet)
 
 /*/{Protheus.doc} fGeraNum
-	Gera o próximo número do documento
+	Gera o prÃ³ximo nÃºmero do documento
 	@type  Static Function
 	@author Elvis Siqueira (TOTVS Recife)
 	@since 28/06/2024
