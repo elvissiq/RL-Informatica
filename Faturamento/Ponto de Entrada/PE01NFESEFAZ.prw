@@ -70,7 +70,7 @@ User Function PE01NFESEFAZ()
         
         //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         //@ Bloco responsável por acrescenta o Número de Série. ///// INICIO /////
-        For _nI :=1  to Len(aProd)
+        For _nI := 1  to Len(aProd)
             
             nVolume += aProd[_nI,9] //Soma a quantidade dos produtos
             
@@ -108,7 +108,17 @@ User Function PE01NFESEFAZ()
     EndIF 
 
     If !Empty(aEspVol)
-        aEspVol[1,2] := nVolume
+        Do Case
+            Case Len(aEspVol) > 1
+                IF !Empty(aEspVol[2,1])
+                    aEspVol[1,1] := aEspVol[2,1]
+                EndIF
+                If !Empty(aEspVol[2,2])
+                    aEspVol[1,2] := aEspVol[2,2]
+                EndIF
+            OtherWise
+                aEspVol[1,2] := nVolume
+        EndCase
     EndIF
 
     FWRestArea(aAreaSD2)
