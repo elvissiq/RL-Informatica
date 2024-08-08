@@ -2,15 +2,15 @@
 
 //------------------------------------------------------------------------
 /*/{PROTHEUS.DOC} MTA410
-FUNÇÃO MTA410 - Ponto de entrada na validação do Pedido de Venda
-@OWNER TOTVS Nordeste
+@TYPE FUNCTION MTA410 - Ponto de entrada na validação do Pedido de Venda
+@AUTHOR TOTVS Nordeste
 @VERSION PROTHEUS 12
 @SINCE 24/05/2024
 @Geração de SC ou OP conforme informado no item do Pedido de Venda
 @Historico
 	28/06/2024 - função fGeraNum (Elvis Siqueira)
 	02/08/2024 - Lógica quando não gera SC nem OP (Elvis Siqueira)
-	// Delecao da linha 53 - aAdd(aLinha, {'C1_ORIGEM' , Alltrim(FunName()) 						, Nil} )
+	08/08/2024 - Delecao da linha 53 - aAdd(aLinha, {'C1_ORIGEM' , Alltrim(FunName()) 						, Nil} ) (Tulio Bastos)
 /*/
 
 User Function MTA410()
