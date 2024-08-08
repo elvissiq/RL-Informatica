@@ -10,6 +10,7 @@ FUNÇÃO MTA410 - Ponto de entrada na validação do Pedido de Venda
 @Historico
 	28/06/2024 - função fGeraNum (Elvis Siqueira)
 	02/08/2024 - Lógica quando não gera SC nem OP (Elvis Siqueira)
+	// Delecao da linha 53 - aAdd(aLinha, {'C1_ORIGEM' , Alltrim(FunName()) 						, Nil} )
 /*/
 
 User Function MTA410()
@@ -49,7 +50,7 @@ User Function MTA410()
 			aAdd(aLinha, {'C1_DATPRF' , aCols[nY,nPosDtEnt] 					, Nil} )
 			aAdd(aLinha, {'C1_XNEMPEM', M->C5_XNEMPEM       					, Nil} )
 			aAdd(aLinha, {'C1_OBS'    , 'SC Gerada Pedido de Venda '+ M->C5_NUM , Nil} )
-			aAdd(aLinha, {'C1_ORIGEM' , Alltrim(FunName()) 						, Nil} )
+			
 			aAdd(aItemSC,aLinha)
 
 		ElseIF aCols[nY, nPosC6Ger] == 'S' //Itens que geram Ordem de Produção
