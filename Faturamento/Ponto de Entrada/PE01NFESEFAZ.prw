@@ -116,7 +116,7 @@ User Function PE01NFESEFAZ()
                 If !Empty(aEspVol[2,2])
                     aEspVol[1,2] := aEspVol[2,2]
                 EndIF
-                aEspVol := aEspVol[1]
+                aSize(aEspVol, 1)
             OtherWise
                 aEspVol[1,2] := nVolume
         EndCase
