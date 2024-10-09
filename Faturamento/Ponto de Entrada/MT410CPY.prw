@@ -12,7 +12,6 @@ USER FUNCTION MT410CPY()
   C5_XLICITA := Space(FWTamSX3("C5_XLICITA")[1])
   C5_XSTATUS := Space(FWTamSX3("C5_XSTATUS")[1])
 
-
   For nY := 1 to Len(aCols)
     If nPosNempem > 0
       aCols[nY,nPosNempem] := Space(FWTamSX3("C6_PEDCLI")[1])
